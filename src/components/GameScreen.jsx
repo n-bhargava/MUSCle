@@ -7,6 +7,8 @@ import HintPanel from "./HintPanel";
 import { Play } from "lucide-react";
 import lyre from "../assets/images/lyre.png";
 
+const devMode = import.meta.env.MODE === "development";
+
 export default function GameScreen() {
   const {
     attempt,
@@ -35,8 +37,13 @@ export default function GameScreen() {
     }
   }, [activeComponent]);
 
+  // const formatTime = (seconds) => {
+  //   return `0:${seconds < 10 ? "0" : ""}${seconds}`;
+  // };
   const formatTime = (seconds) => {
-    return `0:${seconds < 10 ? "0" : ""}${seconds}`;
+    // Round to the nearest integer to remove decimals
+    const roundedSeconds = Math.round(Number(seconds));
+    return `0:${roundedSeconds < 10 ? "0" : ""}${roundedSeconds}`;
   };
 
   const allFieldsFilled = components.every(
@@ -57,6 +64,18 @@ export default function GameScreen() {
             <h1 className="text-3xl font-bold text-amber-400">
               <span className="text-red-800">MUSC</span>le
             </h1>
+            {devMode && (
+              <button
+                onClick={() => {
+                  localStorage.removeItem("MUSCle-today");
+                  localStorage.removeItem("MUSCle-stats");
+                  window.location.reload();
+                }}
+                className="absolute top-4 right-4 z-50"
+              >
+                Reset Game
+              </button>
+            )}
             <div className="text-sm text-gray-600">
               {maxAttempts - attempt} attempt
               {maxAttempts - attempt !== 1 ? "s" : ""} remaining

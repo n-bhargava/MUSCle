@@ -302,19 +302,92 @@ function GameProvider({ children }) {
     }
   };
 
+  // const playSong = () => {
+  //   if (!audio) return;
+
+  //   audio.pause();
+  //   audio.currentTime = 0;
+  //   setCurrentTime(0); // Reset current time immediately
+
+  //   audio.play();
+  //   setIsPlaying(true);
+
+  //   // Use a more precise timer to update current time
+  //   let startTime = Date.now();
+  //   const duration = ATTEMPT_DURATIONS[attempt] * 1000;
+
+  //   const updateInterval = setInterval(() => {
+  //     const elapsed = Date.now() - startTime;
+  //     const seconds = Math.min(elapsed / 1000, ATTEMPT_DURATIONS[attempt]);
+  //     setCurrentTime(seconds);
+
+  //     if (elapsed >= duration) {
+  //       clearInterval(updateInterval);
+  //       audio.pause();
+  //       setIsPlaying(false);
+  //     }
+  //   }, 50); // Update every 50ms for smoother animation
+
+  //   // Also set a timeout as a backup to ensure it stops
+  //   setTimeout(() => {
+  //     clearInterval(updateInterval);
+  //     audio.pause();
+  //     setIsPlaying(false);
+  //   }, duration + 100); // Add a small buffer
+
+  //   return () => clearInterval(updateInterval);
+  // };
+
   const playSong = () => {
     if (!audio) return;
 
+    // Reset everything
     audio.pause();
     audio.currentTime = 0;
+    setCurrentTime(0);
+
+    let intervalId = null;
+
+    // Function to ensure smooth progress
+    const startProgressTracking = () => {
+      const startTime = Date.now();
+      const maxDuration = ATTEMPT_DURATIONS[attempt];
+
+      // Clear any existing intervals
+      if (intervalId) clearInterval(intervalId);
+
+      // Update at 60fps for smooth animation
+      intervalId = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const currentSeconds = Math.min(elapsed, maxDuration);
+
+        setCurrentTime(currentSeconds);
+
+        // Stop when we reach the max duration
+        if (currentSeconds >= maxDuration) {
+          clearInterval(intervalId);
+          audio.pause();
+          setIsPlaying(false);
+        }
+      }, 16); // ~60fps
+    };
+
+    // Play audio and start tracking
     audio.play();
     setIsPlaying(true);
+    startProgressTracking();
 
-    // Stop after the allowed duration for this attempt
+    // Backup timer to ensure we stop
     setTimeout(() => {
+      if (intervalId) clearInterval(intervalId);
       audio.pause();
       setIsPlaying(false);
-    }, ATTEMPT_DURATIONS[attempt] * 1000);
+    }, ATTEMPT_DURATIONS[attempt] * 1000 + 100);
+
+    // Return cleanup function
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   };
 
   const handleSearch = (text) => {
@@ -447,6 +520,86 @@ function GameProvider({ children }) {
     }
   };
 
+  // const submitGuess = () => {
+  //   const result = {
+  //     title: {
+  //       value: currentGuesses.title,
+  //       correct:
+  //         currentGuesses.title.toLowerCase() ===
+  //         todaysPiece.title.toLowerCase(),
+  //     },
+  //     composer: {
+  //       value: currentGuesses.composer,
+  //       correct:
+  //         currentGuesses.composer.toLowerCase() ===
+  //         todaysPiece.composer.toLowerCase(),
+  //     },
+  //     period: {
+  //       value: currentGuesses.period,
+  //       correct:
+  //         currentGuesses.period.toLowerCase() ===
+  //         todaysPiece.period.toLowerCase(),
+  //     },
+  //     type: {
+  //       value: currentGuesses.type,
+  //       correct:
+  //         currentGuesses.type.toLowerCase() === todaysPiece.type.toLowerCase(),
+  //     },
+  //   };
+
+  //   // Create the new attempt results array
+  //   const newAttemptResults = [...attemptResults, result];
+
+  //   // Update attempt results state
+  //   setAttemptResults(newAttemptResults);
+
+  //   // Clear current guesses immediately
+  //   setCurrentGuesses({
+  //     title: "",
+  //     composer: "",
+  //     period: "",
+  //     type: "",
+  //   });
+
+  //   const allCorrect = Object.values(result).every((r) => r.correct);
+
+  //   if (allCorrect) {
+  //     setWon(true);
+  //     endGame(true, newAttemptResults);
+  //     return;
+  //   }
+
+  //   if (attempt + 1 >= MAX_ATTEMPTS) {
+  //     endGame(false, newAttemptResults);
+  //     return;
+  //   }
+
+  //   // Update attempt and explicitly save game progress with updated attempts
+  //   setAttempt((prevAttempt) => {
+  //     const newAttempt = prevAttempt + 1;
+
+  //     // Save with the updated state (important to use the new values)
+  //     const gameObject = {
+  //       attempt: newAttempt,
+  //       attemptResults: newAttemptResults,
+  //       complete: gameFinished,
+  //       won,
+  //       date: gameSeed,
+  //       hintsRevealed,
+  //       currentGuesses: {
+  //         title: "",
+  //         composer: "",
+  //         period: "",
+  //         type: "",
+  //       },
+  //       activeComponent,
+  //     };
+  //     localStorage.setItem("MUSCle-today", JSON.stringify(gameObject));
+
+  //     return newAttempt;
+  //   });
+  // };
+
   const submitGuess = () => {
     const result = {
       title: {
@@ -489,42 +642,42 @@ function GameProvider({ children }) {
     });
 
     const allCorrect = Object.values(result).every((r) => r.correct);
+    const newAttempt = attempt + 1; // Always increment the attempt counter
 
     if (allCorrect) {
       setWon(true);
+      setAttempt(newAttempt); // Update attempt before ending game
       endGame(true, newAttemptResults);
       return;
     }
 
-    if (attempt + 1 >= MAX_ATTEMPTS) {
+    if (newAttempt >= MAX_ATTEMPTS) {
+      // Check against new attempt count
+      setAttempt(newAttempt); // Update attempt before ending game
       endGame(false, newAttemptResults);
       return;
     }
 
-    // Update attempt and explicitly save game progress with updated attempts
-    setAttempt((prevAttempt) => {
-      const newAttempt = prevAttempt + 1;
+    // Only update attempt here if game continues
+    setAttempt(newAttempt);
 
-      // Save with the updated state (important to use the new values)
-      const gameObject = {
-        attempt: newAttempt,
-        attemptResults: newAttemptResults,
-        complete: gameFinished,
-        won,
-        date: gameSeed,
-        hintsRevealed,
-        currentGuesses: {
-          title: "",
-          composer: "",
-          period: "",
-          type: "",
-        },
-        activeComponent,
-      };
-      localStorage.setItem("MUSCle-today", JSON.stringify(gameObject));
-
-      return newAttempt;
-    });
+    // Save game progress with updated values
+    const gameObject = {
+      attempt: newAttempt,
+      attemptResults: newAttemptResults,
+      complete: gameFinished,
+      won,
+      date: gameSeed,
+      hintsRevealed,
+      currentGuesses: {
+        title: "",
+        composer: "",
+        period: "",
+        type: "",
+      },
+      activeComponent,
+    };
+    localStorage.setItem("MUSCle-today", JSON.stringify(gameObject));
   };
 
   const endGame = (hasWon, results) => {

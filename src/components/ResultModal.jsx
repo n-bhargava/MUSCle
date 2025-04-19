@@ -90,7 +90,7 @@ export default function ResultsModal() {
           <div className="text-center mb-6">
             <p className="text-gray-700">
               {won
-                ? `You guessed it in ${attempt + 1} attempt${
+                ? `You guessed it in ${attempt} attempt${
                     attempt !== 0 ? "s" : ""
                   }!`
                 : `Better luck next time! (${maxAttempts}/${maxAttempts} attempts used)`}
@@ -99,7 +99,7 @@ export default function ResultsModal() {
             <div className="flex justify-center space-x-4 mt-4">
               <button
                 onClick={handleShare}
-                className="inline-flex items-center px-4 py-2 bg-cardinal text-white rounded-md hover:bg-red-700"
+                className="inline-flex items-center px-4 py-2 !bg-red-800 text-white rounded-md hover:bg-red-700"
               >
                 {copied ? (
                   <Check size={18} className="mr-1" />
