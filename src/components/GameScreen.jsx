@@ -36,10 +36,7 @@ export default function GameScreen() {
       inputRef.current.focus();
     }
   }, [activeComponent]);
-
-  // const formatTime = (seconds) => {
-  //   return `0:${seconds < 10 ? "0" : ""}${seconds}`;
-  // };
+  
   const formatTime = (seconds) => {
     // Round to the nearest integer to remove decimals
     const roundedSeconds = Math.round(Number(seconds));

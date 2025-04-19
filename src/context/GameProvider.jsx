@@ -302,42 +302,6 @@ function GameProvider({ children }) {
     }
   };
 
-  // const playSong = () => {
-  //   if (!audio) return;
-
-  //   audio.pause();
-  //   audio.currentTime = 0;
-  //   setCurrentTime(0); // Reset current time immediately
-
-  //   audio.play();
-  //   setIsPlaying(true);
-
-  //   // Use a more precise timer to update current time
-  //   let startTime = Date.now();
-  //   const duration = ATTEMPT_DURATIONS[attempt] * 1000;
-
-  //   const updateInterval = setInterval(() => {
-  //     const elapsed = Date.now() - startTime;
-  //     const seconds = Math.min(elapsed / 1000, ATTEMPT_DURATIONS[attempt]);
-  //     setCurrentTime(seconds);
-
-  //     if (elapsed >= duration) {
-  //       clearInterval(updateInterval);
-  //       audio.pause();
-  //       setIsPlaying(false);
-  //     }
-  //   }, 50); // Update every 50ms for smoother animation
-
-  //   // Also set a timeout as a backup to ensure it stops
-  //   setTimeout(() => {
-  //     clearInterval(updateInterval);
-  //     audio.pause();
-  //     setIsPlaying(false);
-  //   }, duration + 100); // Add a small buffer
-
-  //   return () => clearInterval(updateInterval);
-  // };
-
   const playSong = () => {
     if (!audio) return;
 
@@ -519,86 +483,6 @@ function GameProvider({ children }) {
         return "";
     }
   };
-
-  // const submitGuess = () => {
-  //   const result = {
-  //     title: {
-  //       value: currentGuesses.title,
-  //       correct:
-  //         currentGuesses.title.toLowerCase() ===
-  //         todaysPiece.title.toLowerCase(),
-  //     },
-  //     composer: {
-  //       value: currentGuesses.composer,
-  //       correct:
-  //         currentGuesses.composer.toLowerCase() ===
-  //         todaysPiece.composer.toLowerCase(),
-  //     },
-  //     period: {
-  //       value: currentGuesses.period,
-  //       correct:
-  //         currentGuesses.period.toLowerCase() ===
-  //         todaysPiece.period.toLowerCase(),
-  //     },
-  //     type: {
-  //       value: currentGuesses.type,
-  //       correct:
-  //         currentGuesses.type.toLowerCase() === todaysPiece.type.toLowerCase(),
-  //     },
-  //   };
-
-  //   // Create the new attempt results array
-  //   const newAttemptResults = [...attemptResults, result];
-
-  //   // Update attempt results state
-  //   setAttemptResults(newAttemptResults);
-
-  //   // Clear current guesses immediately
-  //   setCurrentGuesses({
-  //     title: "",
-  //     composer: "",
-  //     period: "",
-  //     type: "",
-  //   });
-
-  //   const allCorrect = Object.values(result).every((r) => r.correct);
-
-  //   if (allCorrect) {
-  //     setWon(true);
-  //     endGame(true, newAttemptResults);
-  //     return;
-  //   }
-
-  //   if (attempt + 1 >= MAX_ATTEMPTS) {
-  //     endGame(false, newAttemptResults);
-  //     return;
-  //   }
-
-  //   // Update attempt and explicitly save game progress with updated attempts
-  //   setAttempt((prevAttempt) => {
-  //     const newAttempt = prevAttempt + 1;
-
-  //     // Save with the updated state (important to use the new values)
-  //     const gameObject = {
-  //       attempt: newAttempt,
-  //       attemptResults: newAttemptResults,
-  //       complete: gameFinished,
-  //       won,
-  //       date: gameSeed,
-  //       hintsRevealed,
-  //       currentGuesses: {
-  //         title: "",
-  //         composer: "",
-  //         period: "",
-  //         type: "",
-  //       },
-  //       activeComponent,
-  //     };
-  //     localStorage.setItem("MUSCle-today", JSON.stringify(gameObject));
-
-  //     return newAttempt;
-  //   });
-  // };
 
   const submitGuess = () => {
     const result = {
