@@ -91,17 +91,16 @@ export default function GameScreen() {
               {components.map((component) => (
                 <button
                   key={component}
-                  className={`py-1 px-2 rounded-md text-sm font-medium border-2 ${
+                  className={`py-1 px-2 rounded-md text-sm font-medium border-2 !bg-black-800 ${
                     activeComponent === component
-                      ? "border-cardinal text-cardinal bg-red-50"
+                      ? "!border-gray-800 text-gray-800 !bg-gray-100"
                       : currentGuesses[component]
-                      ? "border-green-500 text-green-700 bg-green-50"
-                      : "border-yellow-100 text-yellow-500"
+                      ? "!border-amber-400 text-amber-400 !bg-amber-50"
+                      : "!border-red-800 text-red-800 !bg-red-200"
                   }`}
                   onClick={() => selectComponent(component)}
                 >
                   {component.charAt(0).toUpperCase() + component.slice(1)}
-                  {currentGuesses[component] && "✓"}
                 </button>
               ))}
             </div>
@@ -125,7 +124,7 @@ export default function GameScreen() {
                     updateCurrentGuess(activeComponent, e.target.value);
                     handleSearch(e.target.value);
                   }}
-                  className="w-full p-2 border border-gray-300 text-gray-500 rounded-md focus:ring-cardinal focus:border-cardinal"
+                  className="w-full p-2 border border-gray-300 text-gray-500 rounded-md focus:ring-red-800 focus:border-red-800"
                 />
 
                 {searchResults.length > 0 && (
@@ -142,7 +141,7 @@ export default function GameScreen() {
               <button
                 onClick={submitGuess}
                 disabled={!allFieldsFilled}
-                className="py-2 px-4 bg-cardinal text-white rounded-md hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                className="py-2 px-4 !bg-red-800 text-white rounded-md hover:bg-red-800 disabled:opacity-50 !disabled:bg-red-800 disabled:cursor-not-allowed flex-shrink-0"
               >
                 Submit
               </button>
@@ -157,7 +156,7 @@ export default function GameScreen() {
           <div className="sticky bottom-0 bg-white p-4 border-t border-gray-200 rounded-t-lg shadow-lg flex-shrink-0">
             <button
               onClick={() => setShowResults(true)}
-              className="w-full py-2 bg-red-800 text-white rounded-md hover:bg-red-800 flex items-center justify-center"
+              className="w-full py-2 !bg-red-800 text-white rounded-md hover:bg-red-800 flex items-center justify-center"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
