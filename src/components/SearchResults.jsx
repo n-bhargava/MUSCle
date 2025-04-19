@@ -19,13 +19,11 @@ export default function SearchResults({ results, onSelect }) {
       return true;
     }
   });
-  // Only show top 5 results
-  const topResults = uniqueResults.slice(0, 5);
 
   return (
-    <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-auto left-0 right-0">
+    <div className="absolute z-50 bottom-full mb-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto left-0 right-0">
       <ul className="py-1">
-        {topResults.map((result, index) => (
+        {uniqueResults.map((result, index) => (
           <li
             key={index}
             className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"

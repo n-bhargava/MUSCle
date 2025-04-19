@@ -110,7 +110,7 @@ export default function GameScreen() {
               <button
                 onClick={playSong}
                 disabled={isPlaying}
-                className="p-3 bg-cardinal text-white rounded-full hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                className="p-3 !bg-red-800 text-white rounded-full hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               >
                 <Play size={20} />
               </button>
